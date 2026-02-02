@@ -618,7 +618,7 @@ services:
       - '../snomed-resources/load-snowstorm-data.sh:/load-snowstorm-data.sh'
     #  - "${SNOWSTORM_RF2_FILE_PATH:?}:/snowstorm-data/snomed-data.zip:ro"
 
-  dcm4chee-ldap:
+  dcm4chee5-ldap:
     image: dcm4che/slapd-dcm4chee:${DCM4CHEE5_LDAP_IMAGE_TAG:?}
     profiles: ["dcm4chee5"]
     logging: *log-config
@@ -631,7 +631,7 @@ services:
       - 'dcm4chee5_ldap_data:/var/lib/openldap/openldap-data'
       - 'dcm4chee5_slapd_data:/etc/openldap/slapd.d'
       - "${CONFIG_VOLUME:?}:/etc/bahmni_config/:ro"
-  dcm4chee-db:
+  dcm4chee5-db:
     image: ${DCM4CHEE5_DB_IMAGE_NAME:?}
     profiles: ["dcm4chee5"]
     logging: *log-config
@@ -652,13 +652,8 @@ services:
     restart: ${RESTART_POLICY}
     ports:
       - "8080:8080"
-      - "8443:8443"
-      - "9990:9990"
-      - "9993:9993"
       - "11112:11112"
-      - "2762:2762"
       - "2575:2575"
-      - "12575:12575"
     environment:
       TZ: ${TZ}
       POSTGRES_HOST: ${DCM4CHEE5_DB_HOST:?}
@@ -670,8 +665,8 @@ services:
       SSL_REQUIRED: none
       LDAP_URL: ldap://${DCM4CHEE5_LDAP_HOST:?}:389
     depends_on:
-      - dcm4chee-ldap
-      - dcm4chee-db
+      - dcm4chee5-ldap
+      - dcm4chee5-db
     volumes:
       #- /etc/localtime:/etc/localtime:ro
       #- /etc/timezone:/etc/timezone:ro
@@ -697,7 +692,7 @@ services:
     logging: *log-config
     restart: ${RESTART_POLICY}
 
-  pacs-integration-db:
+  pacs-integration5-db:
     image: ${PACS_INTEGRATION5_DB_IMAGE_NAME:?}
     profiles: [ "dcm4chee5"]
     restart: ${RESTART_POLICY}
