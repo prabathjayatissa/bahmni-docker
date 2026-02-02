@@ -622,22 +622,25 @@ services:
     image: dcm4che/slapd-dcm4chee:${DCM4CHEE5_LDAP_IMAGE_TAG:?}
     profiles: ["dcm4chee5"]
     logging: *log-config
+    restart: ${RESTART_POLICY}
     environment:
       TZ: ${TZ}
       STORAGE_DIR: /storage/fs1
+      IMPORT_LDIF: ${DCM4CHEE5_IMPORT_LDIF_FILES}
     volumes:
       - 'dcm4chee5_ldap_data:/var/lib/openldap/openldap-data'
       - 'dcm4chee5_slapd_data:/etc/openldap/slapd.d'
+      - "${CONFIG_VOLUME:?}:/etc/bahmni_config/:ro"
   dcm4chee-db:
     image: ${DCM4CHEE5_DB_IMAGE_NAME:?}
     profiles: ["dcm4chee5"]
     logging: *log-config
+    restart: ${RESTART_POLICY}
     environment:
       TZ: ${TZ}
       POSTGRES_DB: ${DCM4CHEE5_DB_NAME:?}
       POSTGRES_USER: ${DCM4CHEE5_DB_USERNAME:?}
       POSTGRES_PASSWORD: ${DCM4CHEE5_DB_PASSWORD:?}
-
     volumes:
       # - /etc/localtime:/etc/localtime:ro
       # - /etc/timezone:/etc/timezone:ro
@@ -646,6 +649,7 @@ services:
     image: dcm4che/dcm4chee-arc-psql:${DCM4CHEE5_IMAGE_TAG:?}
     profiles: ["dcm4chee5"]
     logging: *log-config
+    restart: ${RESTART_POLICY}
     ports:
       - "8080:8080"
       - "8443:8443"
@@ -689,13 +693,14 @@ services:
       OPENMRS_ATOMFEED_USER: ${OPENMRS_ATOMFEED_USER:?}
       OPENMRS_ATOMFEED_PASSWORD: ${OPENMRS_ATOMFEED_PASSWORD:?}
       CONCEPT_CODE_RESOLVER_SOURCE_PRIORITY: ${PACS_CONCEPT_CODE_RESOLVER_SOURCE_PRIORITY:?}
+      CREATE_IMAGING_STUDY_ENABLED: ${CREATE_IMAGING_STUDY_ENABLED}
     logging: *log-config
     restart: ${RESTART_POLICY}
 
   pacs-integration-db:
     image: ${PACS_INTEGRATION5_DB_IMAGE_NAME:?}
     profiles: [ "dcm4chee5"]
-    restart: unless-stopped
+    restart: ${RESTART_POLICY}
     environment:
       TZ: ${TZ}
       POSTGRES_DB: ${PACS_INTEGRATION5_DB_NAME:?}
