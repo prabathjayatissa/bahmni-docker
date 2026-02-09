@@ -695,6 +695,7 @@ services:
   pacs-integration5-db:
     image: ${PACS_INTEGRATION5_DB_IMAGE_NAME:?}
     profiles: [ "dcm4chee5"]
+    logging: *log-config
     restart: ${RESTART_POLICY}
     environment:
       TZ: ${TZ}
