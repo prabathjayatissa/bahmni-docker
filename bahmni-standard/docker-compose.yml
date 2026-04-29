@@ -374,6 +374,29 @@ services:
     logging: *log-config
     restart: ${RESTART_POLICY}
 
+  template-service:
+    image: bahmni/template-service:${TEMPLATE_SERVICE_IMAGE_TAG:-latest}
+    profiles: ["emr", "bahmni-standard"]
+    depends_on:
+      - openmrs
+    volumes:
+      - "${CONFIG_VOLUME:?}:/etc/bahmni_config/:ro"
+    environment:
+      TZ: ${TZ}
+      NODE_ENV: production
+      PORT: 8080
+      OPENMRS_URL: http://openmrs:8080
+      TEMPLATES_DIR: /etc/bahmni_config/apps/clinical/print-templates
+      OPENMRS_USERNAME: ${OPENMRS_USERNAME}
+      OPENMRS_PASSWORD: ${OPENMRS_PASSWORD}
+    shm_size: '256mb'
+    logging: *log-config
+    restart: ${RESTART_POLICY}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/template-service/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   implementer-interface:
     image: bahmni/implementer-interface:${IMPLEMENTER_INTERFACE_IMAGE_TAG:?}
