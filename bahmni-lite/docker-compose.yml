@@ -264,7 +264,7 @@ services:
 
   template-service:
     image: bahmni/bahmni-template-service:${TEMPLATE_SERVICE_IMAGE_TAG:?}
-    profiles: ["emr", "bahmni-standard"]
+    profiles: ["emr", "bahmni-lite"]
     environment:
       TZ: ${TZ}
       NODE_ENV: ${NODE_ENV:?}
