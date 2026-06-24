@@ -376,7 +376,7 @@ services:
     restart: ${RESTART_POLICY}
 
   template-service:
-    image: bahmni/bahmni-template-service:${TEMPLATE_SERVICE_IMAGE_TAG:?}
+    image: bahmni/bahmni-template-service:latest
     profiles: ["emr", "bahmni-standard"]
     environment:
       TZ: ${TZ}
